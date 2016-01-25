@@ -9,8 +9,6 @@ const Router = require('router');
 
 const router = Router();
 
-const fs = require('fs');
-const path = require('path');
 
 router.get('/post', renderTemplate('post.html'));
 
@@ -44,6 +42,8 @@ function done(err, req, res) {
     }
 }
 
+const fs = require('fs');
+const path = require('path');
 function renderTemplate(template) {
     return (req, res) => {
         res.setHeader('content-type',  'text/html; charset=utf-8');
