@@ -10,14 +10,14 @@ const Router = require('router');
 const router = Router();
 
 
-router.get('/post', renderTemplate('post.html'));
+router.get('/post', sendHTML('post.html'));
 
 const bodyParser = require('body-parser');
 router.post('/post', bodyParser.urlencoded({extended: false}), function (req, res) {
     res.end(JSON.stringify(req.body));
 });
 
-router.get('/', renderTemplate('index.html'));
+router.get('/', sendHTML('index.html'));
 
 const server = http.createServer((req, res) => router(req, res, (err) => done(err, req, res)));
 
@@ -44,7 +44,7 @@ function done(err, req, res) {
 
 const fs = require('fs');
 const path = require('path');
-function renderTemplate(template) {
+function sendHTML(template) {
     return (req, res) => {
         res.setHeader('content-type',  'text/html; charset=utf-8');
         fs.createReadStream(path.resolve(__dirname, 'templates', template)).pipe(res);
