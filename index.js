@@ -1,15 +1,22 @@
 'use strict'
 
+const P = require('bluebird');
+
 const http = require('http');
 P.promisifyAll(http.Server.prototype);
 
 const Router = require('router');
 
-const P = require('bluebird');
-
 const router = Router();
 
-const server = http.createServer((req, res) => router(req, res, () => done(req, res)));
+const fs = require('fs');
+const path = require('path');
+
+router.get('/post', renderTemplate('post.html'));
+
+router.get('/', renderTemplate('index.html'));
+
+const server = http.createServer((req, res) => router(req, res, (err) => done(err, req, res)));
 
 server.listenAsync(process.env.PORT || 3880).then(() => logPort(server), logErrorAndExit);
 
@@ -22,7 +29,19 @@ function logErrorAndExit(err) {
     process.exit(1);
 }
 
-function done(req, res) {
-    res.statusCode = 404;
-    res.end('not found\n');
+function done(err, req, res) {
+    if (err) {
+        res.end(String(err.stack || err));
+        res.statusCode = 500;
+    } else {
+        res.statusCode = 404;
+        res.end('not found\n');
+    }
+}
+
+function renderTemplate(template) {
+    return (req, res) => {
+        res.setHeader('content-type',  'text/html; charset=utf-8');
+        fs.createReadStream(path.resolve(__dirname, 'templates', template)).pipe(res);
+    }
 }
