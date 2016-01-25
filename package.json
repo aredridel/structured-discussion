@@ -21,6 +21,7 @@
   "homepage": "https://github.com/aredridel/structured-discussion#readme",
   "dependencies": {
     "bluebird": "^3.1.1",
+    "body-parser": "^1.14.2",
     "router": "^1.1.3"
   }
 }

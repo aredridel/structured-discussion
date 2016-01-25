@@ -14,6 +14,11 @@ const path = require('path');
 
 router.get('/post', renderTemplate('post.html'));
 
+const bodyParser = require('body-parser');
+router.post('/post', bodyParser.urlencoded({extended: false}), function (req, res) {
+    res.end(JSON.stringify(req.body));
+});
+
 router.get('/', renderTemplate('index.html'));
 
 const server = http.createServer((req, res) => router(req, res, (err) => done(err, req, res)));
