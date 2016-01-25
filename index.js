@@ -10,7 +10,9 @@ const Router = require('router');
 const router = Router();
 
 
-router.get('/post', sendHTML('post.html'));
+router.get('/post', renderTemplate(function (req, res, render) {
+    render('post', {});
+}));
 
 const bodyParser = require('body-parser');
 router.post('/post', bodyParser.urlencoded({extended: false}), function (req, res) {
@@ -49,4 +51,22 @@ function sendHTML(template) {
         res.setHeader('content-type',  'text/html; charset=utf-8');
         fs.createReadStream(path.resolve(__dirname, 'templates', template)).pipe(res);
     }
+}
+
+const ejs = require('ejs')
+const bl = require('bl');
+function renderTemplate(go) {
+    return function (req, res, next) {
+        res.setHeader('content-type',  'text/html; charset=utf-8');
+        try {
+            go(req, res, function render(template, data) {
+                const filename = path.resolve(__dirname, 'templates', template + '.html');
+                fs.createReadStream(filename).pipe(bl((err, buf) => {
+                    res.end(ejs.render(buf.toString(), data, { filename }));
+                })).on('error', next)
+            }, next);
+        } catch(e) {
+            next(e);
+        }
+    };
 }
