@@ -1,34 +1,6 @@
-"use strict";
-
 const router = module.exports = require('router')();
 
-const P = require('bluebird');
-
-const path = require('path');
-const fs = P.promisifyAll(require('fs'));
-
-const dataPath = path.resolve(__dirname, '..', 'data', 'data.json')
-
-let storage = fs.readFileAsync(dataPath, 'utf-8').then(JSON.parse).catch(err => { 
-    if (err.code = 'ENOENT') return {};
-    throw err;
-});
-
-const posts = {
-    add: function (id, data) {
-        return storage.then(all => {
-            all[id] = data;
-            storage = Promise.resolve(storage);
-            return all;
-        }).then(JSON.stringify).then(all => fs.writeFileAsync(dataPath, all)).then(() => data)
-    },
-    get: function (id) {
-        return storage.then(all => all[id]);
-    },
-    all: function () {
-        return storage;
-    }
-};
+const posts = require('../storage')('posts');
 
 const uuid = require('uuid');
 const renderTemplate = require('../renderTemplate');
