@@ -14,10 +14,12 @@ module.exports = function createStorage(type) {
 
     return {
         add: function (id, data) {
-            return storage.then(all => {
+            storage = storage.then(all => {
                 all[id] = data;
                 return all;
-            }).then(all => storage = Promise.resolve(all)).then(JSON.stringify).then(all => fs.writeFileAsync(dataPath, all)).then(() => data)
+            })
+
+            return storage.then(JSON.stringify).then(all => fs.writeFileAsync(dataPath, all)).then(() => data)
         },
         get: function (id) {
             return storage.then(all => all[id]);
