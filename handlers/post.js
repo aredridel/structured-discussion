@@ -1,10 +1,6 @@
-const Router = require('router');
+"use strict";
 
-const router = Router();
-
-module.exports = router;
-
-const renderTemplate = require('../renderTemplate');
+const router = module.exports = require('router')();
 
 const P = require('bluebird');
 
@@ -35,6 +31,7 @@ const posts = {
 };
 
 const uuid = require('uuid');
+const renderTemplate = require('../renderTemplate');
 router.get('/post', renderTemplate(function (req, res, render) {
     render('post', { uuid: uuid() });
 }));
