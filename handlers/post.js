@@ -8,19 +8,29 @@ const renderTemplate = require('../renderTemplate');
 
 const P = require('bluebird');
 
-const storage = {};
+const path = require('path');
+const fs = P.promisifyAll(require('fs'));
+
+const dataPath = path.resolve(__dirname, '..', 'data', 'data.json')
+
+let storage = fs.readFileAsync(dataPath, 'utf-8').then(JSON.parse).catch(err => { 
+    if (err.code = 'ENOENT') return {};
+    throw err;
+});
 
 const posts = {
     add: function (id, data) {
-        storage[id] = data;
-        return Promise.resolve(data);
-
+        return storage.then(all => {
+            all[id] = data;
+            storage = Promise.resolve(storage);
+            return all;
+        }).then(JSON.stringify).then(all => fs.writeFileAsync(dataPath, all)).then(() => data)
     },
     get: function (id) {
-        return Promise.resolve(storage[id]);
+        return storage.then(all => all[id]);
     },
     all: function () {
-        return Promise.resolve(storage);
+        return storage;
     }
 };
 
