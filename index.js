@@ -10,8 +10,9 @@ const Router = require('router');
 const router = Router();
 
 
+const uuid = require('uuid');
 router.get('/post', renderTemplate(function (req, res, render) {
-    render('post', {});
+    render('post', { uuid: uuid() });
 }));
 
 const bodyParser = require('body-parser');
@@ -60,7 +61,7 @@ function renderTemplate(go) {
         res.setHeader('content-type',  'text/html; charset=utf-8');
         try {
             go(req, res, function render(template, data) {
-                const filename = path.resolve(__dirname, 'templates', template + '.html');
+                const filename = path.resolve(__dirname, 'templates', template + '.ejs');
                 fs.createReadStream(filename).pipe(bl((err, buf) => {
                     res.end(ejs.render(buf.toString(), data, { filename }));
                 })).on('error', next)
