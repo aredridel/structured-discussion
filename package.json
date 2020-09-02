@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/aredridel/structured-discussion#readme",
   "dependencies": {
-    "bl": "^1.0.0",
+    "bl": "^4.0.3",
     "bluebird": "^3.1.1",
     "body-parser": "^1.14.2",
     "ejs": "^2.3.4",
